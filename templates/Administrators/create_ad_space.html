@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Ad Space</title>
+</head>
+<body>
+    <h2>Create Ad Space</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <label>Name:</label>
+        <input type="text" name="name" required><br>
+
+        <label>Position:</label>
+        <input type="text" name="position" required><br>
+
+        <label>Width:</label>
+        <input type="number" name="width" required><br>
+
+        <label>Height:</label>
+        <input type="number" name="height" required><br>
+
+        <label>Available:</label>
+        <select name="is_available">
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+        </select><br>
+
+        <button type="submit">Create</button>
+    </form>
+
+    <a href="{% url 'ad_inventory' %}">Back to Inventory</a>
+</body>
+</html>

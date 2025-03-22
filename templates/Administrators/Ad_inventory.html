@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ad Inventory Management</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { width: 80%; margin: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: center; }
+        th { background-color: #f4f4f4; }
+        .btn { padding: 5px 10px; text-decoration: none; border-radius: 5px; }
+        .btn-add { background: green; color: white; }
+        .btn-delete { background: red; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Ad Inventory Management</h2>
+
+        <!-- Ad Space Table -->
+        <h3>Available Ad Spaces</h3>
+        <a href="{% url 'create_ad_space' %}" class="btn btn-add">+ Add Ad Space</a>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Size (W x H)</th>
+                <th>Available</th>
+                <th>Action</th>
+            </tr>
+            {% for space in ad_spaces %}
+            <tr>
+                <td>{{ space.id }}</td>
+                <td>{{ space.name }}</td>
+                <td>{{ space.position }}</td>
+                <td>{{ space.width }} x {{ space.height }}</td>
+                <td>{{ space.is_available }}</td>
+                <td>
+                    <a href="{% url 'delete_ad_space' space.id %}" class="btn btn-delete">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <!-- Time Slot Table -->
+        <h3>Available Time Slots</h3>
+        <a href="{% url 'create_time_slot' %}" class="btn btn-add">+ Add Time Slot</a>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Booked</th>
+                <th>Action</th>
+            </tr>
+            {% for slot in time_slots %}
+            <tr>
+                <td>{{ slot.id }}</td>
+                <td>{{ slot.start_time }}</td>
+                <td>{{ slot.end_time }}</td>
+                <td>{{ slot.is_booked }}</td>
+                <td>
+                    <a href="{% url 'delete_time_slot' slot.id %}" class="btn btn-delete">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>

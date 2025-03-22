@@ -1,0 +1,136 @@
+{% extends "Client/Client_home.html" %}
+{% block content %}
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile Page</title>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+.profile-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+  margin-top: 0;
+}
+
+.profile-card {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(15px);
+  border-radius: 15px;
+  padding: 40px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  margin-top: 0;
+}
+
+.profile-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+.profile-card img {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid white;
+  transition: transform 0.3s ease-in-out;
+}
+
+.profile-card img:hover {
+  transform: scale(1.1);
+}
+
+h2 {
+  font-size: 1.8rem;
+  margin-top: 15px;
+  font-weight: 600;
+  color: black;
+}
+
+.profile-info {
+  margin-top: 15px;
+  font-size: 16px;
+  color: black;
+}
+
+.profile-info p {
+  margin: 8px 0;
+  font-size: 1rem;
+}
+
+.profile-info span {
+  font-weight: bold;
+  color: rgb(5, 79, 31);
+}
+
+.edit-button {
+  display: inline-block;
+  margin-top: 20px;
+  background:black;
+  padding: 12px 25px;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 16px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.edit-button:hover {
+  background: black;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 600px) {
+  .profile-card {
+    padding: 25px;
+    width: 90%;
+  }
+
+  .profile-card img {
+    width: 120px;
+    height: 120px;
+  }
+
+  h2 {
+    font-size: 1.6rem;
+  }
+
+  .edit-button {
+    width: 100%;
+    padding: 10px;
+  }
+}
+</style>
+</head>
+<div class="profile-container" style="margin-top: 0;">
+  <div class="profile-card">
+    <h2> Profile</h2>
+
+    <img src="{{users.profileimage.url}}" alt="Client Image">
+    <div class="profile-info">
+      <p><span>Name:</span> {{users.first_name}} {{users.last_name}}</p>
+      <p><span>Company Name:</span> {{users.company_name}}</p>
+      <p><span>Phone:</span> {{users.phone}}</p>
+      <p><span>Email:</span> {{users.email}}</p>
+    </div>
+    <a href="/edit_profile/{{users.id}}" class="edit-button">Edit Profile</a>
+  </div>
+</div>
+{% endblock %}

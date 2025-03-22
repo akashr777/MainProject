@@ -1,0 +1,196 @@
+{% extends "Client/Client_home.html" %}
+{% load static %}
+{% block title %}
+{% endblock %}
+{% block content %}
+<style>
+  /* Profile Edit Form Wrapper */
+  .edit-profile-wrapper {
+    width: 100%;
+    max-width: 600px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.5s ease-in-out;
+    margin: auto;
+    margin-top: 35px;
+  }
+
+  /* Center the container vertically and horizontally */
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Make the container take full viewport height */
+  }
+
+  /* Profile Image */
+  .profile-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 15px;
+    border: 4px solid #005f73;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .profile-img:hover {
+    transform: scale(1.05);
+  }
+
+  /* Form Styling */
+  .form-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+
+  .form-control {
+    border-radius: 10px;
+    border: 1px solid #ced4da;
+    transition: 0.3s;
+  }
+
+  .form-control:focus {
+    border-color: #005f73;
+    box-shadow: 0 0 5px rgba(0, 95, 115, 0.5);
+  }
+
+  /* Button Styling */
+  .btn-custom {
+    padding: 8px 15px;  /* Smaller padding for smaller buttons */
+    border-radius: 8px; /* Small border radius for squared appearance */
+    font-size: 14px; /* Smaller font size */
+    font-weight: bold;
+    transition: 0.3s ease-in-out;
+    border: 2px solid #ccc; /* Add border */
+    width: auto; /* Allow buttons to take natural width */
+    text-align: center; /* Center text */
+  }
+
+  .btn-save {
+    background: black;
+    color: white;
+  }
+
+  .btn-save:hover {
+    background: black;
+    color: white;
+  }
+
+  .btn-cancel {
+    background: #dc3545;
+    color: white;
+  }
+
+  .btn-cancel:hover {
+    background: #c82333;
+    color: white;
+  }
+
+  /* Flexbox to align buttons side by side and center them */
+  .button-group {
+    display: flex;
+    justify-content: center; /* Center the buttons horizontally */
+    gap: 10px; /* Space between buttons */
+    width: 100%; /* Ensure buttons fill the width and center */
+  }
+
+  .button-group .btn-custom {
+    width: auto; /* Both buttons will be the same size and not stretch */
+  }
+
+  /* Responsive */
+  @media (max-width: 576px) {
+    .form-container {
+      grid-template-columns: 1fr;
+    }
+
+    .profile-img {
+      width: 100px;
+      height: 100px;
+    }
+
+    .button-group {
+      flex-direction: column; /* Stack buttons vertically on smaller screens */
+      gap: 15px; /* Space between stacked buttons */
+    }
+
+    .button-group .btn-custom {
+      width: 100%; /* Make buttons full-width on small screens */
+    }
+  }
+
+  /* Fade In Animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+
+<div class="container">
+  <div class="edit-profile-wrapper">
+    <h2 class="mb-3">Edit Profile</h2>
+
+    <!-- Profile Image -->
+    <img src="{% if user.profileimage %}{{ user.profileimage.url }}{% else %}{% static 'images/default-profile.png' %}{% endif %}" 
+         alt="Profile Image" class="profile-img">
+
+    <!-- Profile Edit Form -->
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      
+      <div class="form-container">
+        <div class="mb-3 text-start">
+          <label class="form-label">First Name</label>
+          <input type="text" class="form-control" name="first_name" value="{{ user.first_name }}" required>
+        </div>
+
+        <div class="mb-3 text-start">
+          <label class="form-label">Last Name</label>
+          <input type="text" class="form-control" name="last_name" value="{{ user.last_name }}" required>
+        </div>
+
+        <div class="mb-3 text-start">
+          <label class="form-label">Company Name</label>
+          <input type="text" class="form-control" name="company_name" value="{{ user.company_name }}"/>
+        </div>
+
+        <div class="mb-3 text-start">
+          <label class="form-label">Phone</label>
+          <input type="text" class="form-control" name="phone" value="{{ user.phone }}" required/>
+        </div>
+
+        <div class="mb-3 text-start">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" name="email" value="{{ user.email }}" required/>
+        </div>
+
+        <div class="mb-3 text-start">
+          <label class="form-label">Profile Image</label>
+          <input type="file" class="form-control" name="profileimage">
+        </div>
+      </div>
+
+      <div class="button-group">
+        <!-- <button type="submit" class="btn btn-custom btn-save">Save Changes</button> -->
+        <a href="/edit_profile/{{ user.id }}">
+          <button class="btn btn-success btn-sm">Save Changes</button>
+      </a>
+        <a href="{% url 'profile' %}" class="btn btn-custom btn-cancel">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

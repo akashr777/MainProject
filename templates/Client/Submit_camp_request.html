@@ -1,0 +1,339 @@
+{% extends "Client/Client_home.html" %}
+
+{% block content %}
+
+<style>
+    body {
+        background-color: #f8f9fc;
+        font-family: 'Poppins', sans-serif;
+        color: #333;
+    }
+
+    .form-container {
+        max-width: 80%;
+        margin: 40px auto;
+        background: white;
+        padding: 35px;
+        border-radius: 12px;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
+        transition: 0.3s ease-in-out;
+    }
+
+    .form-container:hover {
+        box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    h2 {
+        text-align: center;
+        font-weight: 600;
+        background: linear-gradient(45deg, #6a11cb, #ff0080);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    h4 {
+        font-weight: 600;
+        color: #333;
+        border-left: 5px solid #6a11cb;
+        padding-left: 10px;
+        margin-bottom: 20px;
+    }
+
+    label {
+        font-weight: 500;
+        color: #555;
+    }
+
+    input, select {
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        padding: 10px;
+    }
+
+    .checkbox-group label {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .checkbox-group input {
+        margin-right: 10px;
+    }
+
+    .btn-submit {
+        background: linear-gradient(45deg, #6a11cb, #ff0080);
+        border: none;
+        color: white;
+        width: 100%;
+        padding: 12px;
+        font-size: 18px;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: 0.3s ease-in-out;
+    }
+
+    .btn-submit:hover {
+        background: linear-gradient(45deg, #ff0080, #6a11cb);
+        transform: scale(1.05);
+    }
+
+    /* Attractive section divider */
+    .section-divider {
+        margin: 30px 0;
+        height: 4px;
+        background: linear-gradient(to right, #6a11cb, transparent);
+        border-radius: 2px;
+    }
+    .custom-file-label {
+    display: block;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.custom-file-input {
+    border: 2px dashed #6a11cb;
+    border-radius: 8px;
+    padding: 10px;
+    width: 100%;
+    background: #f8f9fc;
+    outline: none;
+    transition: 0.3s ease-in-out;
+}
+
+.custom-file-input:hover {
+    border-color: #ff0080;
+    background: #f0f0f5;
+}
+
+.custom-file-input:focus {
+    border-color: #6a11cb;
+    background: white;
+}
+
+small.text-muted {
+    display: block;
+    margin-top: 5px;
+    color: #777;
+}
+#estimated_budget {
+        color: blue; /* Blue text */
+        font-weight: bold; /* Make it stand out */
+        border: 2px solid #007bff; /* Blue border */
+        background-color: #f0f8ff; /* Light blue background */
+    }
+
+
+</style>
+
+<div class="container">
+    <div class="form-container">
+        <h2> Create Your Ad Campaign</h2>
+
+        <form method="post" action="" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="USER" value="{{ form.id }}">
+
+            <!-- Campaign Details -->
+            <div class="row mt-4">
+                <h4> Campaign Details</h4>
+                <div class="col-md-6">
+                    <label>Campaign Name</label>
+                    <input type="text" class="form-control" name="campaign_name" required>
+                </div>
+                <div class="col-md-3">
+                    <label>Start Date</label>
+                    <input type="date" class="form-control" id="start_date" name="start_date" required>
+                    <small id="dateMessage"></small>
+                </div>
+                <div class="col-md-3">
+                    <label>End Date</label>
+                    <input type="date" class="form-control" id="end_date" name="end_date" required>
+                    <small id="endDateMessage"></small>
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <!-- Design Preferences -->
+            <div class="row mt-4">
+                <h4> Design Preferences</h4>
+                <div class="col-md-4">
+                    <label>Choose Primary Color</label>
+                    <input type="color" class="form-control form-control-color" name="primary_color" required>
+                </div>
+                <div class="col-md-4">
+                    <label>Font Style</label>
+                    <select class="form-select" name="font_style">
+                        <option value="Arial">Arial</option>
+                        <option value="Times New Roman">Times New Roman</option>
+                        <option value="Roboto">Roboto</option>
+                        <option value="Montserrat">Montserrat</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label>Choose Theme</label>
+                    <select class="form-select" name="theme">
+                        <option value="Light">Light</option>
+                        <option value="Dark">Dark</option>
+                        <option value="Minimal">Minimal</option>
+                        <option value="Vibrant">Vibrant</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <!-- Ad Preferences -->
+            <div class="row mt-4">
+                <h4> Ad Preferences</h4>
+
+                <div class="col-md-4">
+                    <label>Creative Requirements</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="creative_requirements[]" value="Image"> Image</label>
+                        <label><input type="checkbox" name="creative_requirements[]" value="Video"> Video</label>
+                        <label><input type="checkbox" name="creative_requirements[]" value="Carousel"> Carousel</label>
+                        <label><input type="checkbox" name="creative_requirements[]" value="GIF"> GIF</label>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <label>Ad Effects</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="ad_effects[]" value="Blur"> Blur</label>
+                        <label><input type="checkbox" name="ad_effects[]" value="Shadow"> Shadow</label>
+                        <label><input type="checkbox" name="ad_effects[]" value="Brightness"> Brightness</label>
+                        <label><input type="checkbox" name="ad_effects[]" value="None"> None</label>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <label>Ad Placement</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="ad_placement[]" value="Homepage"> Homepage</label>
+                        <label><input type="checkbox" name="ad_placement[]" value="Sidebar"> Sidebar</label>
+                        <label><input type="checkbox" name="ad_placement[]" value="Footer"> Footer</label>
+                        <label><input type="checkbox" name="ad_placement[]" value="Popup"> Popup</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <div class="row mt-4">
+                <h4>Budget Calculation & Campaign Message</h4>
+                
+                <!-- Estimated Budget -->
+                <div class="col-md-6">
+                    <label>Estimated Budget (INR)</label>
+                    <input type="text" class="form-control" id="estimated_budget" name="estimated_budget" readonly>
+                </div>
+            
+                <!-- Campaign Message -->
+                <div class="col-md-6">
+                    <label for="campaign_text" class="custom-label">Campaign Message</label>
+                    <textarea id="campaign_text" name="campaign_text" class="form-control campaign-textarea" placeholder="Write a compelling message for your campaign..."></textarea>
+                </div>
+            </div>
+            
+            <div class="section-divider"></div>
+            
+          <div class="row mt-4">
+            <h4>Upload Ad Media</h4>
+            <div class="col-md-12">
+                <label>Upload Images/Videos</label>
+                <input type="file" class="form-control" name="ad_files" multiple accept="image/*,video/*">
+                <small class="text-muted">You can upload multiple images or videos.</small>
+            </div>
+        </div>
+        
+        <div class="section-divider"></div>
+        <div class="row mt-3">
+          <!-- Additional Changes -->
+          <div class="col-md-12">
+              <label for="additional_changes">Additional Description</label>
+              <textarea id="additional_text" name="additional_text" class="form-control" rows="3" placeholder="Mention any additional description..."></textarea>
+          </div>
+      </div>
+            <!-- Submit Button -->
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-submit"> Submit Campaign</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      let startDateInput = document.getElementById("start_date");
+      let endDateInput = document.getElementById("end_date");
+      let dateMessage = document.getElementById("dateMessage");
+      let endDateMessage = document.getElementById("endDateMessage");
+
+      function setMinStartDate() {
+          let today = new Date();
+          today.setDate(today.getDate() + 5); // Minimum 5 days from today
+          let minStartDate = today.toISOString().split("T")[0];
+          startDateInput.min = minStartDate;
+      }
+
+      function validateStartDate() {
+          let selectedStartDate = new Date(startDateInput.value);
+          let today = new Date();
+          today.setDate(today.getDate() + 5); // Minimum 5 days from today
+
+          if (selectedStartDate < today) {
+              dateMessage.innerHTML = "⚠️ Start date must be at least 5 days from today!";
+              dateMessage.style.color = "red";
+              startDateInput.value = "";
+          } else {
+              dateMessage.innerHTML = "";
+              setMinEndDate();
+          }
+      }
+
+      function setMinEndDate() {
+          if (startDateInput.value) {
+              endDateInput.min = startDateInput.value;
+          }
+      }
+
+      function validateEndDate() {
+          let startDate = new Date(startDateInput.value);
+          let endDate = new Date(endDateInput.value);
+
+          if (endDate <= startDate) {
+              endDateMessage.innerHTML = "⚠️ End date must be after the start date!";
+              endDateMessage.style.color = "red";
+              endDateInput.value = "";
+          } else {
+              endDateMessage.innerHTML = "";
+          }
+      }
+
+      // Set the minimum start date when the page loads
+      setMinStartDate();
+
+      // Event listeners
+      startDateInput.addEventListener("change", validateStartDate);
+      endDateInput.addEventListener("change", validateEndDate);
+  });
+  document.addEventListener("DOMContentLoaded", function () {
+        let adPreferences = document.querySelectorAll("input[name='creative_requirements[]'], input[name='ad_effects[]'], input[name='ad_placement[]']");
+        let budgetInput = document.getElementById("estimated_budget");
+
+        function calculateBudget() {
+            let basePrice = 1000;
+            let selectedOptions = document.querySelectorAll("input[name='creative_requirements[]']:checked, input[name='ad_effects[]']:checked, input[name='ad_placement[]']:checked").length;
+            let totalBudget = basePrice + selectedOptions * 500;
+            budgetInput.value = totalBudget;
+        }
+
+        adPreferences.forEach(pref => {
+            pref.addEventListener("change", calculateBudget);
+        });
+    });
+</script>
+
+
+{% endblock %}

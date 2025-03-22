@@ -1,0 +1,189 @@
+{% extends "Administrators/base.html" %}
+
+{% block content %}
+
+<style>
+  .form-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-top: 150px;
+    margin-left: 550px;
+  }
+
+  .form-title {
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    color: black;
+  }
+
+  .btn-submit {
+    background-color: black;
+    color: #fff;
+    border: none;
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-submit:hover {
+    background-color: black;
+    color: white;
+  }
+
+  .error-msg {
+    color: red;
+    font-size: 0.875rem;
+  }
+</style>
+
+<!-- Edit Employee Form -->
+<div class="form-container">
+  <h2 class="form-title">Edit Employee Details</h2>
+  <form method="post" action="" enctype="multipart/form-data" onsubmit="return validateForm()">
+    {% csrf_token %}
+
+    <div class="row g-3">
+      <!-- Full Name -->
+      <div class="col-md-6">
+        <label for="fullName" class="form-label">Full Name</label>
+        <input type="text" class="form-control" id="fullName" name="full_name" value="{{ employee.full_name }}" required>
+        <span class="error-msg" id="nameError"></span>
+      </div>
+
+      <!-- Email -->
+      <div class="col-md-6">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" name="email" value="{{ employee.email }}" required>
+        <span class="error-msg" id="emailError"></span>
+      </div>
+
+      <!-- Phone -->
+      <div class="col-md-6">
+        <label for="phone" class="form-label">Phone Number</label>
+        <input type="tel" class="form-control" id="phone" name="phone" value="{{ employee.phone }}" required>
+        <span class="error-msg" id="phoneError"></span>
+      </div>
+
+      <!-- Department -->
+      <div class="col-md-6">
+        <label for="department" class="form-label">Role</label>
+        <select class="form-select" id="department" name="role" required>
+          <option value="Campaign Manager">Campaign Manager</option>
+          <option value="Creative Director">Creative Director</option>
+          <option value="Digital Marketing Head">Digital Marketing Head</option>
+          <option value="Copywriter">Copywriter</option>
+          <option value="Graphic Designer">Graphic Designer</option>
+          <option value="Advertising Executive">Advertising Executive</option> 
+        </select>
+        <span class="error-msg" id="departmentError"></span>
+      </div>
+
+     
+
+      <!-- Date of Joining -->
+      <!-- <div class="col-md-6">
+        <label for="joiningDate" class="form-label">Date of Joining</label>
+        <input type="date" class="form-control" id="joiningDate" name="date_of_joining" value="{{ employee.date_of_joining }}" required>
+        <span class="error-msg" id="dateError"></span>
+      </div> -->
+      <div class="col-md-6">
+        <label for="image" class="upload-label">Change Photo</label>
+        <div class="upload-wrapper">
+          <input type="file" name="image" id="image" accept="image/*">
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="col-12 text-center">
+        <button type="submit" class="btn btn-submit">Save Changes</button>
+      </div>
+    </div>
+  </form>
+</div>
+<script>
+  function validateForm() {
+    let isValid = true;
+
+    // Full Name Validation
+    const fullName = document.getElementById("fullName").value;
+    const nameError = document.getElementById("nameError");
+    const nameRegex = /^[A-Za-z\s]{3,}$/;
+    if (!nameRegex.test(fullName)) {
+      nameError.textContent = "Full Name must be at least 3 characters and only letters.";
+      isValid = false;
+    } else {
+      nameError.textContent = "";
+    }
+
+    // Email Validation
+    const email = document.getElementById("email").value;
+    const emailError = document.getElementById("emailError");
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      emailError.textContent = "Enter a valid email address.";
+      isValid = false;
+    } else {
+      emailError.textContent = "";
+    }
+
+    // Phone Validation
+    const phone = document.getElementById("phone").value;
+    const phoneError = document.getElementById("phoneError");
+    const phoneRegex = /^[0-9]{10,}$/;
+    if (!phoneRegex.test(phone)) {
+      phoneError.textContent = "Phone number must be at least 10 digits.";
+      isValid = false;
+    } else {
+      phoneError.textContent = "";
+    }
+
+    // Department Validation
+    const department = document.getElementById("department").value;
+    const departmentError = document.getElementById("departmentError");
+    if (department === "") {
+      departmentError.textContent = "Please select a department.";
+      isValid = false;
+    } else {
+      departmentError.textContent = "";
+    }
+
+    // Job Title Validation
+    const jobTitle = document.getElementById("jobTitle").value;
+    const jobTitleError = document.getElementById("jobTitleError");
+    if (jobTitle.length < 2) {
+      jobTitleError.textContent = "Job title must be at least 2 characters.";
+      isValid = false;
+    } else {
+      jobTitleError.textContent = "";
+    }
+
+    // Date of Joining Validation
+    const joiningDate = document.getElementById("joiningDate").value;
+    const dateError = document.getElementById("dateError");
+    const currentDate = new Date().toISOString().split('T')[0]; // Current date in YYYY-MM-DD format
+
+    if (!joiningDate) {
+      dateError.textContent = "Please select a date.";
+      isValid = false;
+    } else if (joiningDate > currentDate) {
+      dateError.textContent = "Date of Joining cannot be in the future.";
+      isValid = false;
+    } else {
+      dateError.textContent = "";
+    }
+
+    return isValid;
+  }
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+{% endblock %}

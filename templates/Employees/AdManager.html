@@ -1,0 +1,14 @@
+<h2>Review Project: {{ project.title }}</h2>
+<ul>
+    {% for creative in creatives %}
+        <li>
+            {{ creative.creative_type }} uploaded by {{ creative.employee.username }}
+            {% if creative.file %}
+                <a href="{{ creative.file.url }}">View File</a>
+            {% else %}
+                {{ creative.text_content }}
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
+<a href="{% url 'submit_final_ad' project.id %}">Submit Final Ad</a>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assign Ad to Slot</title>
+</head>
+<body>
+    <h2>Assign Ad to Slot</h2>
+    <form method="POST">
+        {% csrf_token %}
+        
+        <label>Select Ad Creative:</label>
+        <select name="ad_creative">
+            {% for ad in ad_creatives %}
+                <option value="{{ ad.id }}">{{ ad.title }}</option>
+            {% endfor %}
+        </select><br>
+
+        <label>Select Ad Space:</label>
+        <select name="ad_space">
+            {% for space in ad_spaces %}
+                <option value="{{ space.id }}">{{ space.name }} ({{ space.position }})</option>
+            {% endfor %}
+        </select><br>
+
+        <label>Select Time Slot:</label>
+        <select name="time_slot">
+            {% for slot in time_slots %}
+                <option value="{{ slot.id }}">{{ slot.start_time }} - {{ slot.end_time }}</option>
+            {% endfor %}
+        </select><br>
+
+        <button type="submit">Assign</button>
+    </form>
+    <a href="{% url 'ad_inventory' %}">Back to Inventory</a>
+</body>
+</html>

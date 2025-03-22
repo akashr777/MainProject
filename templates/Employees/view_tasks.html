@@ -1,0 +1,211 @@
+{% extends "Employees/Emp_sidebar.html" %}
+{% block content %}
+
+<style>
+    .container {
+        max-width: 1000px;
+        margin: auto;
+        display: flex;
+        gap: 20px;
+        padding: 20px;
+        background: white;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+
+    /* Task Details Section (Left) */
+    .task-details {
+        flex: 1;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+
+    h2 {
+        text-align: center;
+    }
+
+    .info {
+        margin-bottom: 10px;
+    }
+
+    /* Chat Section (Right) */
+    .chat-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        max-height: 500px;
+        overflow-y: auto;
+        background: #fff;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Chat Messages */
+    .message-container {
+        display: flex;
+        margin-bottom: 10px;
+        width: 100%;
+    }
+
+    .message {
+        max-width: 70%;
+        padding: 12px;
+        border-radius: 15px;
+        word-wrap: break-word;
+        position: relative;
+        font-size: 14px;
+    }
+
+    /* Left-aligned messages (Other Employees) */
+    .message-left {
+        background: #e5e5e5;
+        text-align: left;
+        align-self: flex-start;
+        border-radius: 15px 15px 15px 5px;
+        color: #333;
+        margin-right: auto;
+    }
+
+    /* Right-aligned messages (Logged-in Employee) */
+    .message-right {
+        background: #25D366; /* WhatsApp Green */
+        color: white;
+        text-align: right;
+        align-self: flex-end;
+        border-radius: 15px 15px 5px 15px;
+        margin-left: auto;
+    }
+
+    .message-user {
+        font-weight: bold;
+        font-size: 14px;
+        margin-bottom: 3px;
+        color: #fff;
+    }
+
+    .message-time {
+        font-size: 12px;
+        color: #ddd;
+        margin-top: 5px;
+        text-align: right;
+    }
+
+    /* Input Field */
+    .chat-input-container {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .chat-input {
+        flex-grow: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .btn-send {
+        background-color: #25D366; /* WhatsApp Green */
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .btn-send:hover {
+        background-color: #1DA851;
+    }
+</style>
+
+<div class="container">
+    <!-- Task Details on the Left -->
+    <div class="task-details">
+        <h2>🔍 Task Details</h2>
+        <p class="info"><strong>Task Name:</strong> {{ task.task_name }}</p>
+        <p class="info"><strong>Assigned To:</strong>  
+            {% for emp in task.assigned_to.all %}
+                {{ emp.full_name }}{% if not forloop.last %}, {% endif %}
+            {% empty %}
+                No employees assigned.
+            {% endfor %}
+        </p>
+        <p class="info"><strong>Department:</strong> {{ task.department.name }}</p>
+        <p class="info"><strong>Priority:</strong> {{ task.priority }}</p>
+        <p class="info"><strong>Status:</strong> {{ task.status }}</p>
+        <p class="info"><strong>Deadline:</strong> {{ task.deadline }}</p>
+        <p class="info"><strong>Description:</strong> {{ task.description }}</p>
+    </div>
+
+    <!-- Comment Section on the Right (WhatsApp-style) -->
+    <div class="chat-container">
+        <h3>💬 Comments</h3>
+        
+        {% for comment in comments %}
+            <div class="message-container">
+                <div class="message {% if comment.employee.LOGINID.id == request.session.userid %}message-right{% else %}message-left{% endif %}">
+                    <p class="message-user">{{ comment.employee.full_name }}</p>
+                    <p>{{ comment.comment }}</p>
+                    <p class="message-time">{{ comment.created_at|date:"d M Y, h:i A" }}</p>
+                </div>
+            </div>
+        {% empty %}
+            <p>No comments yet. Be the first to comment!</p>
+        {% endfor %}
+
+        <!-- Comment Input Form -->
+        <form method="POST" class="chat-input-container">
+            {% csrf_token %}
+            <input type="text" name="comment" class="chat-input" placeholder="Type a message..." required>
+            <button type="submit" class="btn-send">💬 Send</button>
+        </form>
+    </div>
+</div>
+
+<script>  function scrollToBottom() {
+    let chatBox = document.getElementById("chatBox");
+    chatBox.scrollTo({
+        top: chatBox.scrollHeight,
+        behavior: "smooth"
+    });  // ✅ Scroll to latest message smoothly
+}
+
+// ✅ Scroll to bottom when page loads
+document.addEventListener("DOMContentLoaded", function () {
+    scrollToBottom();
+});
+
+// ✅ Prevent scrolling to the top when submitting the form
+document.getElementById("commentForm").addEventListener("submit", function(event) {
+    event.preventDefault(); // Stop default page reload
+    let form = this;
+    let formData = new FormData(form);
+
+    fetch(form.action, {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())  // ✅ Expect JSON response from Django
+    .then(data => {
+        if (data.success) {
+            // ✅ Append the new message dynamically without reloading
+            document.getElementById("chatBox").innerHTML += `
+                <div class="message-container">
+                    <div class="message message-right">
+                        <p class="message-user">You</p>
+                        <p>${formData.get("comment")}</p>
+                        <p class="message-time">Just now</p>
+                    </div>
+                </div>`;
+            
+            form.reset();  // ✅ Clear input field
+            scrollToBottom();  // ✅ Keep scroll at the bottom
+        }
+    })
+    .catch(error => console.error("Error:", error));
+});
+</script>
+
+{% endblock %}

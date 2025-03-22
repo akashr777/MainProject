@@ -1,0 +1,186 @@
+{% load static %}
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Admin Panel</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="{% static 'assets/img/favicon.png' %}" rel="icon">
+  <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+  
+  <style>
+    /* Sidebar Active Link */
+    .sidebar-nav .nav-link.active {
+      background: linear-gradient(to right, #3498db, #8e44ad);
+      color: white;
+      font-weight: bold;
+    }
+
+    /* Main Dashboard Background */
+    main {
+      background: white;
+      padding: 30px;
+    }
+
+    /* Admin Header */
+    .header {
+      background: #fff;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Card Styling */
+    .info-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .info-card:hover {
+      transform: scale(1.05);
+    }
+
+    .card-icon {
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      color: white;
+      padding: 15px;
+      border-radius: 50%;
+      font-size: 24px;
+    }
+
+    .card-title {
+      font-weight: 600;
+      font-size: 18px;
+      color: #2c3e50;
+    }
+
+    /* Footer */
+    .footer {
+      background: #fff;
+      padding: 10px;
+      text-align: center;
+      box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+
+</head>
+
+<body style="background-color: white;">
+
+  <!-- Header -->
+  <header class="header fixed-top d-flex align-items-center p-3">
+    <div class="d-flex align-items-center justify-content-between w-100">
+      <a href="#" class="d-flex align-items-center text-decoration-none">
+        <img src="{% static 'images/admin.jpg' %}" alt="Admin" class="rounded-circle" width="35" height="35">
+        <span class="ms-2 text-dark fw-bold">Admin Panel</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="sidebar">
+    <ul class="sidebar-nav" id="sidebar-nav">
+      <li class="nav-item"><a class="nav-link" href="/adminhome"><i class="bi bi-grid"></i> Dashboard</a></li>
+      <li class="nav-item"><a class="nav-link" href="/mng_client"><i class="bi bi-people"></i> Client Management</a></li>
+      <li class="nav-item"><a class="nav-link" href="/mng_employee"><i class="bi bi-person-badge"></i> Employee Management</a></li>
+      <a href="{% url 'view_tasks' %}" class="btn btn-primary">View Tasks</a>
+
+          
+            <li class="nav-item"><a class="nav-link" href="/ad_inventory"><i class="bi bi-megaphone"></i> Ad Inventory</a></li>
+      <li class="nav-item"><a class="nav-link" href="/view_camp_request"><i class="bi bi-clipboard-check"></i> Campaigns</a></li>
+      <li class="nav-item"><a class="nav-link" href="/assign-ad"><i class="bi bi-calendar"></i> Assign Ad Slots</a></li>
+      <li class="nav-item"><a class="nav-link" href="/login"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main">
+    {% block content%}
+    <div class="pagetitle">
+      <h1>Dashboard</h1>
+    </div>
+
+    <section class="section dashboard">
+      <div class="row">
+
+        <!-- Total Clients -->
+        <div class="col-md-4">
+          <div class="card info-card">
+            <div class="d-flex align-items-center">
+              <div class="card-icon d-flex align-items-center justify-content-center">
+                <i class="bi bi-people"></i>
+              </div>
+              <div class="ps-3">
+                <h5 class="card-title">Total Clients</h5>
+                <h6>{{ client_count }}</h6>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total Employees -->
+        <div class="col-md-4">
+          <div class="card info-card">
+            <div class="d-flex align-items-center">
+              <div class="card-icon d-flex align-items-center justify-content-center">
+                <i class="bi bi-person-lines-fill"></i>
+              </div>
+              <div class="ps-3">
+                <h5 class="card-title">Total Employees</h5>
+                <h6>{{ emp_count }}</h6>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Campaigns -->
+        <div class="col-md-4">
+          <div class="card info-card">
+            <div class="d-flex align-items-center">
+              <div class="card-icon d-flex align-items-center justify-content-center">
+                <i class="bi bi-megaphone"></i>
+              </div>
+              <div class="ps-3">
+                <h5 class="card-title">Active Campaigns</h5>
+                <h6>{{ active_campaign }}</h6>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+    {% endblock %}
+  </main>
+
+ 
+  <!-- Vendor JS Files -->
+  <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll(".sidebar-nav .nav-link").forEach(link => {
+        if (link.href === window.location.href) {
+          link.classList.add("active");
+        }
+      });
+    });
+  </script>
+
+</body>

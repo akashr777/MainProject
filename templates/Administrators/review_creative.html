@@ -1,0 +1,5 @@
+{% for creative in creatives %}
+    <p>{{ creative.task.title }} - {{ creative.uploaded_by.username }}</p>
+    <a href="{% url 'approve_creative' creative.id %}">Approve</a>
+    <a href="{% url 'reject_creative' creative.id %}">Reject</a>
+{% endfor %}

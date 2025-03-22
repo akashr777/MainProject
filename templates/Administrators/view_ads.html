@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Admin - View Ad Creatives</h2>
+<table>
+    <tr><th>Title</th><th>Employee</th><th>Client</th><th>File</th><th>Status</th></tr>
+    {% for ad in ads %}
+    <tr>
+        <td>{{ ad.title }}</td>
+        <td>{{ ad.employee.username }}</td>
+        <td>{{ ad.client.username }}</td>
+        <td><a href="{{ ad.file.url }}" target="_blank">View File</a></td>
+        <td>{{ ad.status }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

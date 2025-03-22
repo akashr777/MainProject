@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Reassign Task</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Reassign Task</h2>
+    <p><strong>Task:</strong> {{ task.title }}</p>
+    <p><strong>Current Employee:</strong> {{ task.assigned_to.full_name }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <label for="new_employee">Select New Employee:</label>
+        <select class="form-control" name="new_employee" required>
+            {% for employee in employees %}
+                <option value="{{ employee.id }}">{{ employee.full_name }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <button type="submit" class="btn btn-primary">Reassign</button>
+        <a href="{% url 'view_tasks' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,9 @@
+
+<h2>Client - Approved Ad Creatives</h2>
+{% for ad in ads %}
+    <div>
+        <h3>{{ ad.title }}</h3>
+        <p>{{ ad.description }}</p>
+        <a href="{{ ad.file.url }}" target="_blank">View File</a>
+    </div>
+{% endfor %}

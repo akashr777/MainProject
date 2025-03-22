@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Approve Campaign: {{ campaign.name }}</h2>
+<form method="post">
+    {% csrf_token %}
+    <label>Approve?</label>
+    <input type="radio" name="is_approved" value="true"> Yes
+    <input type="radio" name="is_approved" value="false"> No
+    <br>
+    <label>Feedback:</label>
+    <textarea name="feedback"></textarea>
+    <br>
+    <button type="submit">Submit</button>
+</form>
+{% endblock %}

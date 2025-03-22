@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #343a40;
+            color: white;
+            padding-top: 20px;
+            position: fixed;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar a i {
+            margin-right: 10px;
+        }
+
+        .sidebar a:hover {
+            background: #495057;
+            text-decoration: none;
+        }
+
+        .sidebar .active {
+            background: #495057;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            flex-grow: 1;
+            background: #f8f9fa;
+        }
+
+        table th, table td {
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        table th {
+            background-color: #343a40;
+            color: white;
+        }
+
+        .search-form {
+            max-width: 600px;
+            margin: 20px auto;
+        }
+
+        .btn-action {
+            margin: 0 5px;
+        }
+
+        .btn-action i {
+            margin-right: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h3 class="text-center">Admin Panel</h3>
+        <hr>
+        <a href="#" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a href="#"><i class="fas fa-user-tie"></i> Manage Clients</a>
+        <a href="#"><i class="fas fa-users-cog"></i> Employee Management</a>
+        <a href="#"><i class="fas fa-bullhorn"></i> Manage Campaigns</a>
+        <a href="#"><i class="fas fa-layer-group"></i> Ad Inventory</a>
+        <a href="#"><i class="fas fa-file-invoice-dollar"></i> Billing And Invoicing</a>
+        <a href="#"><i class="fas fa-bell"></i> Notifications</a>
+        <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Search Form -->
+        <div class="search-form">
+            <form class="d-flex">
+                <input class="form-control me-2" type="search" placeholder="Search Clients..." aria-label="Search">
+                <button class="btn btn-outline-success" type="submit"><i class="fas fa-search"></i> Search</button>
+            </form>
+        </div>
+
+        <!-- Table -->
+        <div class="table-responsive">
+            <table class="table table-bordered mt-5">
+                <thead>
+                    <tr>
+                        <th scope="col">No</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Company</th>
+                        <th scope="col">Phone</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>Mark</td>
+                        <td>mark@example.com</td>
+                        <td>@mdo</td>
+                        <td>1234567890</td>
+                        <td>
+                            <button class="btn btn-primary btn-sm btn-action"><i class="fas fa-eye"></i> View</button>
+                            <button class="btn btn-success btn-sm btn-action"><i class="fas fa-check"></i> Approve</button>
+                            <button class="btn btn-danger btn-sm btn-action"><i class="fas fa-trash"></i> Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

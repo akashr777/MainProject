@@ -1,0 +1,102 @@
+{% extends "Administrators/base.html" %}
+{% block content %}
+
+<style>
+    /* Center the form */
+    .form-container {
+        max-width: 500px;
+        margin: 5% auto;
+        background: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    h2 {
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: black;
+    }
+
+    .form-group {
+        text-align: left;
+        margin-bottom: 15px;
+    }
+
+    label {
+        font-weight: 600;
+        display: block;
+        margin-bottom: 5px;
+        color: #333;
+    }
+
+    input, textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background: #f8f9fa;
+        font-size: 14px;
+    }
+
+    input:focus, textarea:focus {
+        border-color: #007bff;
+        background: #fff;
+        outline: none;
+    }
+
+    /* Style for Submit Button */
+    .btn-submit {
+        width: 100%;
+        background-color: #007bff;
+        color: white;
+        padding: 10px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 5px;
+        border: none;
+        transition: 0.3s;
+    }
+
+    .btn-submit:hover {
+        background-color: #0056b3;
+    }
+
+    /* Center the success/error messages */
+    .alert {
+        margin-bottom: 15px;
+        text-align: center;
+        font-weight: bold;
+    }
+</style>
+
+<div class="form-container">
+    <h2>📌 Add New Department</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>Department Name:</label>
+            {{ form.name }}
+        </div>
+
+        <div class="form-group">
+            <label>Description:</label>
+            {{ form.description }}
+        </div>
+
+        <button type="submit" class="btn btn-submit">✔ Add Department</button>
+    </form>
+</div>
+
+{% endblock %}

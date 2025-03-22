@@ -1,0 +1,171 @@
+
+<style>
+/* 🌟 Main Grid Layout */
+.creative-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Adjusts dynamically */
+    gap: 24px;
+    padding: 24px;
+    justify-items: center;
+}
+
+/* 🎨 Creative Card Styling */
+.creative-card {
+    background-color: #fff;
+    padding: 18px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 350px;
+    text-align: center;
+    transition: transform 0.2s ease-in-out;
+}
+
+.creative-card:hover {
+    transform: translateY(-5px);
+}
+
+/* 📝 Header Styling */
+.creative-header {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 12px;
+    font-weight: bold;
+}
+
+/* 🎥 Media Styling */
+.creative-media {
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f8f9fa;
+    padding: 5px;
+}
+
+.creative-media img,
+.creative-media video {
+    max-width: 100%;
+    border-radius: 8px;
+}
+
+/* ✅ Status Badge Styling */
+.status-text {
+    display: inline-block;
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.status-approved { background-color: #28a745; color: white; }
+.status-rejected { background-color: #dc3545; color: white; }
+.status-pending { background-color: #ffc107; color: black; }
+
+/* 🎯 Approval Buttons */
+.approve-btn,
+.reject-btn {
+    width: 48%;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background 0.3s ease-in-out;
+}
+
+.approve-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.reject-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.approve-btn:hover {
+    background-color: #218838;
+}
+
+.reject-btn:hover {
+    background-color: #c82333;
+}
+
+/* 📝 Rejection Message */
+.message-textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    resize: vertical;
+}
+
+/* 🔄 Responsive Adjustments */
+@media (max-width: 1024px) {
+    .creative-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .creative-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+</style><h2>Creatives for Task: {{ task.title }}</h2>
+
+{% if creatives %}
+    <div class="creative-grid">
+        {% for creative in creatives %}
+            <div class="creative-card">
+                <div class="creative-header">
+                    <p>🎨 <strong>{{ creative.uploaded_by.full_name }}</strong> ({{ creative.uploaded_by.role.name }})</p>
+                    <p>📅 Uploaded On: {{ creative.uploaded_at|date:"F d, Y" }}</p>
+                </div>
+
+                <div class="creative-media">
+                    {% if creative.file.url|lower|slice:"-4:" == ".mp4" %}
+                        <video controls>
+                            <source src="{{ creative.file.url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    {% elif creative.file.url|lower|slice:"-4:" == ".txt" %}
+                        <pre>{{ creative.text_content }}</pre>
+                    {% else %}
+                        <img src="{{ creative.file.url }}" class="creative-img">
+                    {% endif %}
+                </div>
+
+                <a href="{{ creative.file.url }}" target="_blank">📂 View File</a>
+
+                <p class="status-text 
+                    {% if creative.status == 'Approved' %}status-approved
+                    {% elif creative.status == 'Rejected' %}status-rejected
+                    {% else %}status-pending{% endif %}">
+                    🏷 Status: {{ creative.status }}
+                </p>
+
+                {% if is_cd and creative.status == 'Pending' %}
+                    <div class="approval-actions">
+                        <form method="POST" action="{% url 'approve_creative' creative.id %}">
+                            {% csrf_token %}
+                            <button type="submit" name="action" value="approve" class="approve-btn">✔ Approve</button>
+                            <button type="submit" name="action" value="reject" class="reject-btn">✖ Reject</button>
+                            <textarea name="rejection_message" placeholder="Write rejection message (optional)" class="message-textarea"></textarea>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>No creatives uploaded for this task yet.</p>
+{% endif %}

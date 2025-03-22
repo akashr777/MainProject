@@ -1,0 +1,143 @@
+{% extends 'Administrators/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Campaign Requests</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: black;
+            padding: 20px;
+        }
+
+        .container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            border: 1px solid #ddd;
+            margin-top: -300px;
+            margin-left: 300px;
+        }
+
+        h2 {
+            text-align: center;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .table {
+            width: 100%;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .table thead {
+            background-color: black;
+            color: white;
+        }
+
+        .btn-sm {
+            font-size: 14px;
+            padding: 5px 10px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+        }
+
+        .btn-primary:hover,
+        .btn-success:hover,
+        .btn-danger:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>📢 View Campaign Requests</h2>
+
+        <!-- Campaign Requests Table -->
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Client Name</th>
+                    <th>Company Name</th>
+                    <th>Campaign Name</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <!-- <th>Description</th> -->
+                    <th>Submitted Date</th>
+                    <th>Budget</th>
+
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in req %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ i.CLIENT.first_name }}</td>
+                    <td>{{ i.CLIENT.company_name }}</td>
+                    <td>{{ i.campaign_name }}</td>
+                    <td>{{ i.start_date }}</td>
+                    <td>{{ i.end_date }}</td>
+                    <!-- <td>{{ i.additional_text }}</td> -->
+                    <td>{{ i.created_at }}</td>
+                    <td>{{ i.estimated_budget|floatformat:2 }}</td>
+
+                    <!-- <td>
+                        {% if i.status %}
+                        <span class="badge bg-info">{{ i.status }}</span>
+                        {% else %}
+                        <a href="/view_cmp_request/{{ i.id }}" class="btn btn-primary btn-sm">👀 View</a>
+                        <a href="/accept_campaign/{{ i.id }}" class="btn btn-success btn-sm">✔ Accept</a>
+                        <a href="/reject_campaign/{{ i.id }}" class="btn btn-danger btn-sm">✖ Reject</a>
+                        {% endif %}
+                    </td> -->
+                    <td>
+                        <a href="{% url 'view_cmp_request' i.id %}" class="btn btn-primary btn-sm">View</a>
+                        
+                        {% if not i.status %}
+                            <a href="{% url 'accept_campaign' i.id %}" class="btn btn-success btn-sm">Accept</a>
+                            <a href="{% url 'reject_campaign' i.id %}" class="btn btn-danger btn-sm">Reject</a>
+                        {% else %}
+                            {% if i.status == "Accepted" %}
+                                <span class="badge bg-success">{{ i.status }}</span>
+                            {% elif i.status == "Rejected" %}
+                                <span class="badge bg-danger">{{ i.status }}</span>
+                            {% else %}
+                                <span class="badge bg-info">{{ i.status }}</span>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    
+                    
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+
+{% endblock %}

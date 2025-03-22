@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %} My Campaigns {% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">My Campaigns</h2>
+
+    {% for campaign in campaigns %}
+    <div class="card mb-3">
+        <div class="card-header">
+            <h4>{{ campaign.campaign_name }}</h4>
+            <p><strong>Status:</strong> {{ campaign.status }}</p>
+        </div>
+        <div class="card-body">
+            <h5>Ad Creatives</h5>
+            <div class="row">
+                {% for creative in campaign_creatives.campaign.id %}
+                <div class="col-md-4">
+                    <div class="card mb-2">
+                        {% if creative.file.url|lower|slice:"-3:" == "mp4" %}
+                        <video class="card-img-top" controls>
+                            <source src="{{ creative.file.url }}" type="video/mp4">
+                        </video>
+                        {% else %}
+                        <img src="{{ creative.file.url }}" class="card-img-top" alt="Creative Image">
+                        {% endif %}
+                        <div class="card-body">
+                            <p>Uploaded by: {{ creative.reviewed_by.full_name }}</p>
+                            <p><strong>Uploaded on:</strong> {{ creative.created_at }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p>No creatives uploaded for this campaign yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p>No campaigns found.</p>
+    {% endfor %}
+</div>
+{% endblock %}

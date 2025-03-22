@@ -1,0 +1,194 @@
+{% load custom_filters %} {# Load the custom filter for dictionary access #}
+
+<div class="task-container">
+    {% for task in tasks %}
+        <div class="task-card">
+            <p><strong>Campaign:</strong> {{ task.campaign.campaign_name }}</p>
+            <p><strong>Status:</strong> 
+                <span class="badge 
+                    {% if task.status == 'Completed' %}badge-success
+                    {% elif task.status == 'Review' %}badge-warning
+                    {% elif task.status == 'Final Approval Pending' %}badge-info
+                    {% else %}badge-primary{% endif %}">
+                    {{ task.status }}
+                </span>
+            </p>
+
+            <!-- ✅ Link to View Uploaded Creatives -->
+            {% with task_creatives|get_item:task.id as creatives %}
+                {% if creatives %}
+                    <h6>Uploaded Creatives:</h6>
+                    <a href="{% url 'view_creatives' task.id %}" class="view-creatives-link">View All Creatives</a>
+                {% else %}
+                    <p class="no-creatives">No creatives uploaded yet.</p>
+                {% endif %}
+            {% endwith %}
+
+            <!-- ✅ Employees Upload Creatives (Not Creative Director) -->
+            {% if task.status != "Completed" and not is_cd %}
+                <form action="{% url 'upload_creative' task.id %}" method="POST" enctype="multipart/form-data" class="upload-form">
+                    {% csrf_token %}
+                    <input type="file" name="creative_files" class="file-input" multiple required>
+                    <button type="submit" class="upload-btn">Upload Creatives</button>
+                </form>
+            {% endif %}
+
+            <!-- ✅ Creative Director Final Review (Only Visible to CD) -->
+            {% if is_cd %}
+                <div class="cd-review">
+                    <h6>Upload Final Creatives</h6>
+                    <form id="uploadForm_{{ task.id }}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="file" name="final_creatives" id="finalCreatives_{{ task.id }}" multiple required>
+                        <button type="submit" class="finalize-btn">Upload Creatives</button>
+                    </form>
+
+                    <h6>Finalized Creatives</h6>
+                    <ul id="creativeList_{{ task.id }}">
+                        {% for creative in task.finalcreative_set.all %}
+                            <li><a href="{{ creative.file.url }}" target="_blank">{{ creative.file.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+
+                    <button onclick="sendFinalCreativeToClient({{ task.id }})" class="finalize-btn">Send to Client</button>
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $(".upload-form").on("submit", function (e) {
+            e.preventDefault();  
+            
+            var form = $(this);
+            var formData = new FormData(this);
+            formData.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+
+            $.ajax({
+                url: form.attr("action"),
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    alert(response.message);
+                    location.reload(); 
+                },
+                error: function () {
+                    alert("Upload failed!");
+                }
+            });
+        });
+
+        $("form[id^='uploadForm_']").on("submit", function (e) {
+            e.preventDefault();
+            var taskId = $(this).attr("id").split("_")[1];
+            var formData = new FormData(this);
+            formData.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+
+            $.ajax({
+                url: "/upload-final-creatives/" + taskId + "/",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    alert(response.message);
+                    if (response.success) {
+                        response.files.forEach(function (fileUrl) {
+                            $("#creativeList_" + taskId).append(
+                                "<li><a href='" + fileUrl + "' target='_blank'>" + fileUrl.split('/').pop() + "</a></li>"
+                            );
+                        });
+                    }
+                },
+                error: function () {
+                    alert("Upload failed!");
+                }
+            });
+        });
+    });
+
+    function sendFinalCreativeToClient(taskId) {
+    $.ajax({
+        url: "/send-final-creative/" + taskId + "/",
+        type: "POST",
+        data: { csrfmiddlewaretoken: "{{ csrf_token }}" },
+        success: function (response) {
+            alert(response.message);
+            if (response.success) {
+                // Update task status on the page
+                $(".task-status-" + taskId).text("Client Review");
+
+                // Optionally refresh page to update task list or view
+                // location.reload(); // Uncomment if you prefer a page refresh
+            } else {
+                alert("Failed to send creative!");
+            }
+        },
+        error: function () {
+            alert("Error sending creative to client.");
+        }
+    });
+}
+
+</script>
+
+<!-- ✅ Updated CSS -->
+<style>
+.task-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 20px;
+}
+.task-card {
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    width: 350px;
+}
+
+.badge {
+    padding: 4px 8px;
+    border-radius: 5px;
+}
+.badge-success { background: green; color: white; }
+.badge-warning { background: orange; color: white; }
+.badge-info { background: purple; color: white; }
+.badge-primary { background: blue; color: white; }
+
+.view-creatives-link {
+    color: #007bff;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.view-creatives-link:hover {
+    text-decoration: none;
+}
+
+.upload-form {
+    margin-top: 10px;
+}
+.upload-btn, .finalize-btn {
+    background: #007bff;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    margin-top: 5px;
+}
+.upload-btn:hover, .finalize-btn:hover {
+    background: #0056b3;
+}
+
+.cd-review {
+    margin-top: 10px;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+}
+</style>

@@ -1,0 +1,309 @@
+{% extends "Home/navbar.html" %}
+{% block content %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registration</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@200;300;400;500;600;700&display=swap");
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Open Sans", sans-serif;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      width: 100%;
+      padding: 0 10px;
+      background-image: url('https://img.freepik.com/free-vector/futuristic-background-design_23-2148503793.jpg?t=st=1741196475~exp=1741200075~hmac=44dec5a99f953365cb0d9d8ade5eb4aaa50325e2181155cc0628cba98e472323&w=1380');
+      background-size: cover;
+    }
+
+    .wrapper {
+      width: 500px;
+      border-radius: 10px;
+      padding: 30px;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    form {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    h2 {
+      width: 100%;
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: white;
+    }
+
+    .input-field {
+      position: relative;
+      border-bottom: 2px solid white;
+      margin: 15px 0;
+      width: 48%;
+    }
+
+    .input-field label {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+      color: white;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+
+    .input-field input {
+      width: 100%;
+      height: 40px;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-size: 16px;
+      color: white;
+      padding-left: 5px;
+    }
+
+    .input-field input:focus~label,
+    .input-field input:valid~label {
+      font-size: 12px;
+      top: 5px;
+      color: #ddd;
+    }
+
+    .error-message {
+      color: #ff4d4d;
+      font-size: 12px;
+      text-align: left;
+      width: 100%;
+      padding-top: 3px;
+    }
+
+    .full-width {
+      width: 100%;
+    }
+
+    button {
+      background: white;
+      color: black;
+      font-weight: 600;
+      border: none;
+      padding: 12px 20px;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 16px;
+      transition: 0.3s;
+      width: 100%;
+    }
+
+    button:hover {
+      background: white;
+    }
+    .file-upload {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 15px 0;
+  padding-bottom: 5px;
+}
+
+.upload-label {
+  color: white;
+  font-size: 16px;
+  margin-right: 10px;
+  white-space: nowrap;
+}
+
+.upload-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.upload-wrapper input[type="file"] {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px 0 0 5px;
+  background: #fff;
+  color: #333;
+}
+
+.upload-wrapper input[type="file"]::-webkit-file-upload-button {
+  display: none;
+}
+
+.upload-btn {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 0 5px 5px 0;
+  background: white;
+  color: black;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.upload-btn:hover {
+  background: #0056b3;
+}
+
+  </style>
+</head>
+
+<body>
+  <div class="wrapper">
+    <form action="#" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      
+      <h2>Register</h2>
+      {% if messages %}
+      <div class="alert">
+          {% for message in messages %}
+              <div class="alert-message" style="color: red; font-weight: bold;">{{ message }}</div>
+          {% endfor %}
+      </div>
+  {% endif %}
+
+      <div class="input-field">
+        <input type="text" name="firstname" required>
+        <label>First Name</label>
+        <span class="error-message" style="font-weight: bold;"></span>
+      </div>
+
+      <div class="input-field">
+        <input type="text" name="lastname" required>
+        <label>Last Name</label>
+        <span class="error-message" style="font-weight: bold;"></span>
+      </div>
+
+      <div class="input-field">
+        <input type="email" name="email" required>
+        <label>Email Address</label>
+        <span class="error-message" style="font-weight: bold;"></span>
+      </div>
+
+      <div class="input-field">
+        <input type="text" name="phone" required>
+        <label>Phone Number</label>
+        <span class="error-message" style="font-weight: bold;"></span>
+      </div>
+
+      <div class="input-field full-width">
+        <input type="text" name="company" required>
+        <label>Company Name</label>
+        <span class="error-message" style="font-weight: bold;"></span>
+      </div>
+
+      <div class="input-field">
+        <input type="password" name="password" required>
+        <label>Create Password</label>
+        <span class="error-message" style="font-weight: bold;"></span>
+      </div>
+
+      <div class="input-field">
+        <input type="password" name="confirmpassword" required>
+        <label>Confirm Password</label>
+        <span class="error-message" style="font-weight: bold;"></span>
+      </div>
+      <div class="file-upload">
+        <label for="image" class="upload-label">Photo:</label>
+        <div class="upload-wrapper">
+          <input type="file" name="image" id="image" accept="image/*" required>
+        </div>
+      </div><br>
+      <div class="login-link" style="color: white;">
+        <p style="color: white;">Already have an account? &nbsp;<a href="/login" style=" color: blue;font-weight: bolder;">Login</a></p>
+      </div><br><br>
+
+      <button type="submit">Sign Up</button>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const form = document.querySelector("form");
+
+      // Get input fields and error message containers
+      const inputs = document.querySelectorAll("input");
+      const errorMessages = document.querySelectorAll(".error-message");
+
+      // Validation patterns
+      const patterns = {
+        firstname: /^[A-Za-z]+$/,
+        lastname: /^[A-Za-z]+$/,
+        phone: /^[0-9]{10}$/,
+        email: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
+        password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+      };
+
+      // Validation messages
+      const messages = {
+        firstname: "First name can only contain letters.",
+        lastname: "Last name can only contain letters.",
+        phone: "Phone number must be 10 digits.",
+        email: "Please enter a valid email address.",
+        password: "Password must be at least 8 characters, with uppercase, lowercase, number, and symbol.",
+        confirmpassword: "Passwords do not match."
+      };
+
+      // Function to validate input
+      function validateInput(input) {
+        const name = input.name;
+        const value = input.value;
+        const errorMessage = input.parentElement.querySelector(".error-message");
+
+        if (name === "confirmpassword") {
+          if (value !== document.querySelector("input[name='password']").value) {
+            errorMessage.textContent = messages[name];
+            input.style.borderColor = "red";
+            return false;
+          }
+        } else if (!patterns[name].test(value)) {
+          errorMessage.textContent = messages[name];
+          input.style.borderColor = "red";
+          return false;
+        }
+
+        errorMessage.textContent = "";
+        input.style.borderColor = "green";
+        return true;
+      }
+
+      // Event listeners for real-time validation
+      inputs.forEach(input => {
+        input.addEventListener("input", () => validateInput(input));
+      });
+
+      // Final form submission validation
+      form.addEventListener("submit", function (e) {
+        let isValid = true;
+        inputs.forEach(input => {
+          if (!validateInput(input)) {
+            isValid = false;
+          }
+        });
+        if (!isValid) {
+          e.preventDefault();
+        }
+      });
+    });
+  </script>
+</body>{% endblock %}
+</html>

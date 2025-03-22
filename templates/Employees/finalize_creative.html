@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Finalize Creative Submission</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-5">
+    <h2 class="text-center">Finalize Creative Submission for Campaign: <strong>{{ campaign.campaign_name }}</strong></h2>
+
+    {% if creatives %}
+        <form method="POST">
+            {% csrf_token %}
+            <table class="table table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Select</th>
+                        <th>Creative Type</th>
+                        <th>File</th>
+                        <th>Text Content</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for creative in creatives %}
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="selected_creatives" value="{{ creative.id }}">
+                            </td>
+                            <td>{{ creative.get_creative_type_display }}</td>
+                            <td>
+                                {% if creative.file %}
+                                    <a href="{{ creative.file.url }}" target="_blank" class="btn btn-outline-primary btn-sm">View</a>
+                                {% else %}
+                                    <span class="text-muted">No file</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ creative.text_content|default:"No text content" }}</td>
+                            <td>
+                                <span class="badge {% if creative.status == 'Approved' %}badge-success{% else %}badge-warning{% endif %}">
+                                    {{ creative.status }}
+                                </span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button type="submit" class="btn btn-success">Submit Final Creative</button>
+        </form>
+    {% else %}
+        <p class="text-center text-muted">No creatives available.</p>
+    {% endif %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

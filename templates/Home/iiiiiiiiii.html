@@ -1,0 +1,207 @@
+{% load custom_filters %} {# Load the custom filter for dictionary access #}
+
+<div class="task-container">
+    {% for task in tasks %}
+        <div class="task-card">
+            <h4 class="task-title">{{ task.title }}</h4>
+            <p><strong>Campaign:</strong> {{ task.campaign.campaign_name }}</p>
+            <p><strong>Status:</strong> 
+                <span class="badge 
+                    {% if task.status == 'Completed' %}badge-success
+                    {% elif task.status == 'Review' %}badge-warning
+                    {% elif task.status == 'Final Approval Pending' %}badge-info
+                    {% else %}badge-primary{% endif %}">
+                    {{ task.status }}
+                </span>
+            </p>
+
+            <!-- ✅ Uploaded Creatives Section -->
+            {% with task_creatives|get_item:task.id as creatives %}
+                {% if creatives %}
+                    <h6>Uploaded Creatives:</h6>
+                    <div class="creative-grid">
+                        {% for creative in creatives %}
+                            <div class="creative-item">
+                                {% if creative.file.url|lower|slice:"-4:" == ".mp4" %}
+                                    <video width="200" controls>
+                                        <source src="{{ creative.file.url }}" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                {% else %}
+                                    <img src="{{ creative.file.url }}" width="100" class="creative-img">
+                                {% endif %}
+                                <a href="{{ creative.file.url }}" target="_blank">{{ creative.file.name }}</a>
+
+                                <!-- ✅ Approval Buttons (Creative Director) -->
+                                {% if is_cd and task.status == "Review" %}
+                                <form method="POST" action="{% url 'approve_creative' creative.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" name="action" value="approve">Approve</button>
+                                    
+                                    <textarea name="rejection_message" placeholder="Write rejection message (optional)" style="width:100%; margin-top:10px;"></textarea>
+                                    <button type="submit" name="action" value="reject">Reject</button>
+                                </form>
+                                
+                                    
+                                {% endif %}
+
+                                <p class="status-text 
+                                    {% if creative.status == 'Approved' %}status-approved
+                                    {% elif creative.status == 'Rejected' %}status-rejected
+                                    {% else %}status-pending{% endif %}">
+                                    Status: {{ creative.status }}
+                                </p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="no-creatives">No creatives uploaded yet.</p>
+                {% endif %}
+            {% endwith %}
+
+            <!-- ✅ Upload Creative (For Employees) -->
+            {% if task.status != "Completed" and not is_cd %}
+                <form action="{% url 'upload_creative' task.id %}" method="POST" enctype="multipart/form-data" class="upload-form">
+                    {% csrf_token %}
+                    <input type="file" name="creative_files" class="file-input" multiple required>
+                    <button type="submit" class="upload-btn">Upload Creatives</button>
+                </form>
+            {% endif %}
+
+            <!-- ✅ Creative Director Final Review -->
+            {% if is_cd and task.status == "Review" %}
+                <div class="cd-review">
+                    <h6>Review & Finalize</h6>
+                    <textarea id="feedback_{{ task.id }}" placeholder="Write feedback (optional)"></textarea>
+                    <button onclick="finalizeCreative({{ task.id }})" class="finalize-btn">Finalize & Send to Client</button>
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+
+<!-- ✅ JavaScript Functions -->
+<script>
+function approveCreative(creativeId, action) {
+    console.log("Approve button clicked. Creative ID:", creativeId);  // Debug log
+
+    fetch(`/approve_creative/${creativeId}/`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,  // Ensure CSRF token is included
+            "Content-Type": "application/json"  // Ensure content type is set as JSON
+        },
+        body: JSON.stringify({ action: action })  // Send action as JSON
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Response data:", data);  // Log response to debug
+        if (data.success) {
+            alert(data.message);
+            location.reload();  // Reload the page after approval/rejection
+        } else {
+            alert("Error: " + data.error);  // Display error message
+        }
+    })
+    .catch(error => console.error("Error:", error));  // Catch errors in fetch
+}
+
+function rejectCreative(creativeId) {
+    const rejectionMessage = document.querySelector('textarea[name="rejection_message"]').value;
+    approveCreative(creativeId, 'reject', rejectionMessage);  // Call approveCreative with reject action and message
+}
+
+</script>
+
+<!-- ✅ Updated CSS -->
+<style>
+/* Layout */
+.task-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 20px;
+}
+.task-card {
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    width: 350px;
+}
+
+/* Typography */
+.task-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+.badge {
+    padding: 4px 8px;
+    border-radius: 5px;
+}
+.badge-success { background: green; color: white; }
+.badge-warning { background: orange; color: white; }
+.badge-info { background: purple; color: white; }
+.badge-primary { background: blue; color: white; }
+
+/* Creative Grid */
+.creative-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+.creative-item {
+    width: 120px;
+    text-align: center;
+}
+.creative-img {
+    width: 100%;
+    border-radius: 5px;
+}
+
+/* Status Tags */
+.status-text {
+    font-size: 12px;
+    margin-top: 5px;
+    padding: 3px;
+    border-radius: 5px;
+}
+.status-approved { background: #28a745; color: white; }
+.status-rejected { background: #dc3545; color: white; }
+.status-pending { background: #ffc107; color: black; }
+
+/* Upload Section */
+.upload-form {
+    margin-top: 10px;
+}
+.upload-btn, .finalize-btn, .approve-btn, .reject-btn {
+    background: #007bff;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    margin-top: 5px;
+}
+.upload-btn:hover, .finalize-btn:hover, .approve-btn:hover, .reject-btn:hover {
+    background: #0056b3;
+}
+
+/* Approve/Reject Buttons */
+.approve-btn { background: #28a745; }
+.approve-btn:hover { background: #218838; }
+.reject-btn { background: #dc3545; }
+.reject-btn:hover { background: #c82333; }
+
+/* Review Section */
+.cd-review {
+    margin-top: 10px;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+}
+.cd-review textarea {
+    width: 100%;
+    height: 50px;
+    margin-bottom: 5px;
+}
+</style>

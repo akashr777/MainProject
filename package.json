@@ -1,0 +1,23 @@
+{
+  "name": "adfusionproject",
+  "version": "1.0.0",
+  "description": "Abstract",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akashr777/MainProject.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/akashr777/MainProject/issues"
+  },
+  "homepage": "https://github.com/akashr777/MainProject#readme",
+  "devDependencies": {
+    "electron": "^34.2.0"
+  }
+}

@@ -1,0 +1,104 @@
+{% extends 'Employees/Emp_sidebar.html' %}
+
+{% block content %}
+    <style>
+        .notifications-container {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .notifications-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .notification-item {
+            background-color: #fff;
+            margin: 10px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .notification-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .notification-header {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #3e64ff;
+            margin-bottom: 10px;
+        }
+
+        .notification-body {
+            font-size: 1em;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .notification-body strong {
+            color: #333;
+        }
+
+        .status {
+            font-weight: bold;
+        }
+
+        .status.unread {
+            color: #f44336;
+        }
+
+        .status.read {
+            color: #4caf50;
+        }
+
+        .notification-footer {
+            font-size: 0.9em;
+            color: #888;
+            margin-top: 10px;
+        }
+
+        .notification-footer small {
+            display: block;
+            margin-top: 5px;
+        }
+
+        .notifications-list .notification-item:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+
+    <div class="notifications-container">
+        <h2>Unread Notifications</h2>
+        
+        {% if notifications %}
+            <ul class="notifications-list">
+                {% for notification in notifications %}
+                    <li class="notification-item">
+                        <div class="notification-header">
+                            <strong>From:</strong> {{ notification.CLIENT.first_name }} <!-- Assuming CLIENT refers to the employee -->
+                        </div>
+                        <div class="notification-body">
+                            <strong>Message:</strong> {{ notification.description }} <br>
+                            <strong>Status:</strong> <span class="status {{ notification.status|lower }}">{{ notification.status }}</span> <br>
+                        </div>
+                        <div class="notification-footer">
+                            <small>Date: {{ notification.not_date }}</small>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No unread notifications.</p>
+        {% endif %}
+    </div>
+
+{% endblock %}

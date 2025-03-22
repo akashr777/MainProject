@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f0f4f8;
+            font-family: 'Arial', sans-serif;
+        }
+        /* Navbar Styles */
+        .navbar {
+            background: linear-gradient(45deg, #6a11cb, #ff0080);
+            padding: 20px;
+        }
+        .navbar-brand {
+            font-weight: bold;
+            color: #ffffff;
+        }
+        .navbar-nav .nav-link {
+            color: #b2dfdb;
+            transition: color 0.3s;
+        }
+        .navbar-nav .nav-link:hover {
+            color: #ffffff;
+        }
+        /* Dashboard Styles */
+        .dashboard-header {
+            margin: 30px 0;
+            text-align: center;
+            color: #004d40;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            transition: 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+        .card-title {
+            font-weight: bold;
+            color: #004d40;
+        }
+        .card i {
+            font-size: 3rem;
+            color: #ff6f61;
+        }
+        .card a {
+            text-decoration: none;
+            color: #ff6f61;
+            font-weight: bold;
+        }
+        .card a:hover {
+            color: #d84339;
+        }
+        /* Color Theme for Cards */
+        .card-1 {
+            background: linear-gradient(145deg, #ffffff, #e0f2f1);
+        }
+        .card-2 {
+            background: linear-gradient(145deg, #ffffff, #e0f7fa);
+        }
+        .card-3 {
+            background: linear-gradient(145deg, #ffffff, #e8f5e9);
+        }
+        .card-4 {
+            background: linear-gradient(145deg, #ffffff, #fff3e0);
+        }
+        .card-5 {
+            background: linear-gradient(145deg, #ffffff, #f3e5f5);
+        }
+        .card-6 {
+            background: linear-gradient(145deg, #ffffff, #e0e0e0);
+        }
+
+        .notification {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .modal-dialog {
+            position: absolute;
+            right: 80px;
+            top: 50px;
+        }
+    </style>
+</head>
+<body>
+    {% block title %}
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">AdFusion</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="/clienthome"><i class="fas fa-home"></i> Home</a>
+                    </li>
+                  
+
+                       
+           
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile"><i class="fas fa-user"></i> Profile</a>
+                    </li>
+                    <!-- <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#notificationModal">  <i class="fas fa-bell"></i></a>
+                    </li> -->
+                    <li class="nav-item">
+                        <a class="nav-link position-relative" href="#" data-bs-toggle="modal" data-bs-target="#notificationModal">
+                            <i class="fas fa-bell"></i>
+                            {% if notification|length > 0 %}
+                            <span class="badge bg-danger position-absolute top-0 start-100 translate-middle" id="notificationCount">
+                                
+                                {{ notification|length }}
+                            </span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </nav>
+    
+    <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="notificationModalLabel">Notifications</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div> 
+                  {% for i in notification %}
+                <div class="modal-body">
+                 
+                    <p>{{i.description}}</p>
+                    <hr style="font-weight: bold;">
+
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+    {% block content %}
+
+
+    <!-- Dashboard Header -->
+    <div class="container">
+        <h2 class="dashboard-header">Welcome<span></span></h2>
+        <p class="text-center">Manage your advertising campaigns effortlessly:</p>
+    </div>
+
+    <!-- Dashboard Cards -->
+    <div class="container my-4">
+        <div class="row g-4">
+            <!-- Submit Campaign Request -->
+            <div class="col-md-4">
+              <a href="/sub_req" style="text-decoration: none;">  <div class="card card-1 text-center p-3">
+                    <div class="card-body">
+                        <i class="fas fa-bullhorn"></i>
+                        <h5 class="card-title">Submit Campaign Request</h5>
+                        <p>Launch new ad campaigns easily.</p>
+                    </div>
+                </div>
+            </a>
+            </div>
+            <!-- View Campaigns -->
+            <div class="col-md-4">
+                <a href="/client/campaigns/" style="text-decoration: none;">
+                <div class="card card-2 text-center p-3">
+                    <div class="card-body">
+                        <i class="fas fa-eye"></i>
+                        <h5 class="card-title">View Campaigns</h5>
+                        <p>Track live campaigns and updates.</p>
+                    </div>
+                </div>
+            </a>
+            </div>
+            <!-- Performance Report -->
+            <div class="col-md-4">
+                <div class="card card-3 text-center p-3">
+                    <div class="card-body">
+                        <i class="fas fa-chart-line"></i>
+                        <h5 class="card-title">Performance Report</h5>
+                        <p>Analyze campaign effectiveness.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mt-3">
+            <!-- Campaign History -->
+            <div class="col-md-4">
+                <div class="card card-4 text-center p-3">
+                    <div class="card-body">
+                        <i class="fas fa-history"></i>
+                        <h5 class="card-title">Campaign History</h5>
+                        <p>Review past campaign performance.</p>
+                        <a href="#">View History</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Payment -->
+            <div class="col-md-4">
+                <div class="card card-5 text-center p-3">
+                    <div class="card-body">
+                        <i class="fas fa-wallet"></i>
+                        <h5 class="card-title">Payment</h5>
+                        <p>Manage your invoices and payments.</p>
+                        <a href="#">View Payments</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Feedback -->
+            <div class="col-md-4">
+                <div class="card card-6 text-center p-3">
+                    <div class="card-body">
+                        <i class="fas fa-comments"></i>
+                        <h5 class="card-title">Feedback</h5>
+                        <p>Share your experience and feedback.</p>
+                        <a href="#">Submit Feedback</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+
+document.addEventListener("DOMContentLoaded", function() {
+    fetchNotifications();
+
+    // When the modal is opened, mark notifications as read
+    document.getElementById("notificationModal").addEventListener("shown.bs.modal", function() {
+        markNotificationsAsRead();
+    });
+});
+   
+function fetchNotifications() {
+    fetch("/get-notifications/")  // Create an API endpoint to return JSON response
+    .then(response => response.json())
+    .then(data => {
+        let notificationCount = document.querySelector("#notificationCount");
+
+        if (data.count > 0) {
+            notificationCount.textContent = data.count;
+            notificationCount.style.display = "inline-block";  // Show badge
+        } else {
+            notificationCount.style.display = "none";  // Hide badge if no notifications
+        }
+    });
+}
+function markNotificationsAsRead() {
+    fetch("/mark-notifications-read/", { 
+        method: "POST", 
+        headers: { "X-CSRFToken": "{{ csrf_token }}" }
+    })
+    .then(response => response.json())
+    .then(() => {
+        document.getElementById("notificationCount").style.display = "none";  // Hide count after viewing
+    });
+}
+</script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% endblock %}
+</body>
+</html>
